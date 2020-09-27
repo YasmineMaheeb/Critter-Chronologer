@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -20,34 +21,30 @@ public class PetService {
     @Autowired
     private CustomerService customerService;
 
-    public Pet save (Pet pet) {
+    public Pet save(Pet pet) {
 
         pet = petRepository.save(pet);
-        customerService.addPetToCustomer(pet,pet.getOwner());
+        customerService.addPetToCustomer(pet, pet.getOwner());
         return pet;
     }
 
-    public Pet getPetById (Long id) {
-        try {
-            Pet pet = petRepository.getOne(id);
-            return pet;
-        } catch (Exception c) {
+    public Pet getPetById(Long id) {
+
+        Optional<Pet> pet = petRepository.findById(id);
+        if (pet.isPresent())
+            return pet.get();
+        else
             throw new PetNotFoundException("There is no pet with this ID !");
-        }
+
     }
 
-    public List<Pet> getAll () {
+    public List<Pet> getAll() {
         return petRepository.findAll();
     }
 
-    public List<Pet> getPetsByOwnerId (Long ownerId) {
-        try {
-            return petRepository.findByOwnerId(ownerId);
-        } catch (Exception e) {
-            throw new PetNotFoundException("There is no pet with this owner ID !");
-        }
+    public List<Pet> getPetsByOwnerId(Long ownerId) {
+        return petRepository.findByOwnerId(ownerId);
     }
-
 
 
 }

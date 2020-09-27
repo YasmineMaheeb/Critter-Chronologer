@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -25,11 +26,12 @@ public class CustomerService {
     }
 
     public Customer getById(Long id) {
-        try {
-            return customerRepository.getOne(id);
-        } catch (Exception e) {
+
+        Optional<Customer> customer = customerRepository.findById(id);
+        if (customer.isPresent())
+            return customer.get();
+        else
             throw new UserNotFoundException("There is no customer with this ID !");
-        }
     }
 
     public List<Customer> getAll() {
@@ -37,14 +39,14 @@ public class CustomerService {
     }
 
     public Customer getByPetId(Long petId) {
-        try {
-            Pet pet = petRepository.getOne(petId);
-            Customer owner = customerRepository.findByPetsContaining(pet);
-            System.out.println(pet);
+
+        Optional<Pet> pet = petRepository.findById(petId);
+        if (pet.isPresent()) {
+            Customer owner = customerRepository.findByPetsContaining(pet.get());
             return owner;
-        } catch (Exception e) {
-            throw new PetNotFoundException("There is no pet with this ID !");
         }
+        throw new PetNotFoundException("There is no pet with this ID !");
+
     }
 
     public void addPetToCustomer(Pet pet, Customer customer) {

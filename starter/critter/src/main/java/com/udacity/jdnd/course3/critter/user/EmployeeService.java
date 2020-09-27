@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional
@@ -24,20 +21,15 @@ public class EmployeeService {
     }
 
     public Employee getEmployeeById(Long empId) {
-        try {
-            return employeeRepository.getOne(empId);
-        } catch (Exception e) {
+            Optional<Employee> employee = employeeRepository.findById(empId);
+            if(employee.isPresent())
+                return employee.get();
             throw new UserNotFoundException("There is no Employee with this ID !");
-        }
     }
 
     public void setAvailability(Set<DayOfWeek> daysAvailable, long employeeId) {
-        try {
-            Employee employee = employeeRepository.getOne(employeeId);
+            Employee employee = getEmployeeById(employeeId);
             employee.setDaysAvailable(daysAvailable);
-        } catch (Exception e) {
-            throw new UserNotFoundException("There is no Employee with this ID !");
-        }
     }
 
     public List<Employee> getAvailableEmployeesWithSkills(Set<EmployeeSkill> neededSkills, LocalDate date) {

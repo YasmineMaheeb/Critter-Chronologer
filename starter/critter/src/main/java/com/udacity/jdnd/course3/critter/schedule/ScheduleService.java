@@ -36,25 +36,16 @@ public class ScheduleService {
     }
 
     public List<Schedule> getSchedulesForPet (Long petId) {
-        try {
             Pet pet = petService.getPetById(petId);
             return scheduleRepository.findByPetsContaining(pet);
-        } catch (Exception e) {
-            throw new PetNotFoundException("There is no pet with this ID !");
-        }
     }
 
     public List<Schedule> getSchedulesForEmployee (Long empId) {
-        try {
             Employee employee = employeeService.getEmployeeById(empId);
             return scheduleRepository.findByEmployeesContaining(employee);
-        } catch (Exception e) {
-            throw new UserNotFoundException("There is no Employee with this ID !");
-        }
     }
 
     public List<Schedule> getSchedulesForCustomer (Long custId){
-        try {
             List<Pet> pets = petService.getPetsByOwnerId(custId);
             HashSet<Long> schIds = new HashSet<>();
             ArrayList<Schedule> schedules = new ArrayList<>();
@@ -68,8 +59,5 @@ public class ScheduleService {
                 }
             }
             return schedules;
-        } catch (Exception e) {
-            throw new PetNotFoundException("This user has no Pets !");
-        }
     }
 }
