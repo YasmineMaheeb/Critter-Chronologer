@@ -2,6 +2,7 @@ package com.udacity.jdnd.course3.critter.pet;
 
 import com.udacity.jdnd.course3.critter.user.Customer;
 import com.udacity.jdnd.course3.critter.user.CustomerRepository;
+import com.udacity.jdnd.course3.critter.user.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,8 +17,14 @@ public class PetService {
     @Autowired
     private PetRepository petRepository;
 
+    @Autowired
+    private CustomerService customerService;
+
     public Pet save (Pet pet) {
-        return petRepository.save(pet);
+
+        pet = petRepository.save(pet);
+        customerService.addPetToCustomer(pet,pet.getOwner());
+        return pet;
     }
 
     public Pet getPetById (Long id) {
@@ -40,5 +47,7 @@ public class PetService {
             throw new PetNotFoundException("There is no pet with this owner ID !");
         }
     }
+
+
 
 }

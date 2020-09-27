@@ -74,4 +74,16 @@ public class Pet {
     public void setNotes(String notes) {
         this.notes = notes;
     }
+
+    @Override
+    public String toString() {
+        return "Pet{" +
+                "id=" + id +
+                ", type=" + type +
+                ", name='" + name + '\'' +
+                ", owner=" + owner +
+                ", birthDate=" + birthDate +
+                ", notes='" + notes + '\'' +
+                '}';
+    }
 }

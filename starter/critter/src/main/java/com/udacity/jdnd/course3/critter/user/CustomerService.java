@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,11 +20,11 @@ public class CustomerService {
     @Autowired
     private PetRepository petRepository;
 
-    public Customer save (Customer customer) {
+    public Customer save(Customer customer) {
         return customerRepository.save(customer);
     }
 
-    public Customer getById (Long id) {
+    public Customer getById(Long id) {
         try {
             return customerRepository.getOne(id);
         } catch (Exception e) {
@@ -31,17 +32,30 @@ public class CustomerService {
         }
     }
 
-    public List<Customer> getAll () {
+    public List<Customer> getAll() {
         return customerRepository.findAll();
     }
 
-    public Customer getByPetId (Long petId) {
+    public Customer getByPetId(Long petId) {
         try {
             Pet pet = petRepository.getOne(petId);
-            return pet.getOwner();
+            Customer owner = customerRepository.findByPetsContaining(pet);
+            System.out.println(pet);
+            return owner;
         } catch (Exception e) {
             throw new PetNotFoundException("There is no pet with this ID !");
         }
     }
 
+    public void addPetToCustomer(Pet pet, Customer customer) {
+        List<Pet> pets = customer.getPets();
+        if (pets != null)
+            pets.add(pet);
+        else {
+            pets = new ArrayList<Pet>();
+            pets.add(pet);
+        }
+        customer.setPets(pets);
+        customerRepository.save(customer);
+    }
 }

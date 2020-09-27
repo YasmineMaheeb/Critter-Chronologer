@@ -40,4 +40,13 @@ public class Employee extends User {
     public void setSalary(BigDecimal salary) {
         this.salary = salary;
     }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "daysAvailable=" + daysAvailable +
+                ", skills=" + skills +
+                ", salary=" + salary +
+                "} " + super.toString();
+    }
 }
